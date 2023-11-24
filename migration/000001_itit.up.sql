@@ -11,6 +11,6 @@ CREATE TABLE orders (
     "delivery_service" text NOT NULL,
     "shardkey" text NOT NULL,
     "sm_id" integer NOT NULL,
-    "date_created" timestamp NOT NULL,
+    "date_created" text NOT NULL,
     "oof_shard" text NOT NULL
 );

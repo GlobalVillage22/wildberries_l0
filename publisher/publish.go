@@ -1,11 +1,14 @@
 package main
 
 import (
+	"encoding/json"
 	"fmt"
+	"github.com/brianvoe/gofakeit/v6"
 	"github.com/nats-io/nats.go"
 	"github.com/nats-io/stan.go"
-	"os"
+	"math/rand"
 	"wbl0/internal"
+	"wbl0/internal/model"
 )
 
 func main() {
@@ -21,13 +24,70 @@ func main() {
 			err, cfg.NatsConfig.Url))
 	}
 	defer sc.Close()
-	data, err := os.ReadFile("model.json")
-	if err != nil {
-		panic(fmt.Errorf("Error reading file: %s", err))
+	var testItems []model.Item
+	for i := 0; i < rand.Intn(5); i++ {
+		testItems = append(testItems, model.Item{
+			ChrtID:      rand.Intn(1000),
+			TrackNumber: gofakeit.Word(),
+			Price:       rand.Intn(1000),
+			Rid:         gofakeit.Word(),
+			Name:        gofakeit.Word(),
+			Sale:        rand.Intn(1000),
+			Size:        gofakeit.Word(),
+			TotalPrice:  rand.Intn(1000),
+			NmID:        rand.Intn(1000),
+			Brand:       gofakeit.Word(),
+			Status:      rand.Intn(1000),
+		})
+
 	}
-	err = sc.Publish("orders", data)
-	if err != nil {
-		panic(fmt.Errorf("Error publishing message: %s", err))
+	var data []model.Order
+	for i := 0; i < 100; i++ {
+		data = append(data, model.Order{
+			OrderUid:    fmt.Sprintf("testUid%d", i),
+			TrackNumber: fmt.Sprintf("testTrackNumber-%d", i),
+			Entry:       fmt.Sprintf("testEntry-%d", i),
+			Delivery: model.Delivery{
+				Name:    gofakeit.Name(),
+				Phone:   gofakeit.Phone(),
+				Zip:     gofakeit.Zip(),
+				City:    gofakeit.City(),
+				Address: gofakeit.Street(),
+				Region:  gofakeit.State(),
+				Email:   gofakeit.Email(),
+			},
+			Payment: model.Payment{
+				Transaction:  fmt.Sprintf("testTransaction-%d", i),
+				RequestID:    fmt.Sprintf("testPaymentRequestID-%d", i),
+				Currency:     "RUB",
+				Provider:     gofakeit.Word(),
+				Amount:       rand.Intn(1000),
+				PaymentDt:    rand.Intn(1000),
+				Bank:         gofakeit.Word(),
+				DeliveryCost: rand.Intn(1000),
+				GoodsTotal:   rand.Intn(1000),
+				CustomFee:    rand.Intn(1000),
+			},
+			Items:             testItems,
+			Locale:            gofakeit.Word(),
+			InternalSignature: gofakeit.Word(),
+			CustomerId:        fmt.Sprintf("testCustomerID-%d", i),
+			DeliveryService:   gofakeit.Word(),
+			Shardkey:          gofakeit.Word(),
+			SmId:              rand.Intn(1000),
+			DateCreated:       gofakeit.ConnectiveTime(),
+			OofShard:          "testOofShard",
+		})
 	}
-	fmt.Println("Message sent")
+	for _, v := range data {
+		testOrder, err := json.Marshal(v)
+		if err != nil {
+			fmt.Errorf("Error marshalling order: %s", err)
+		}
+		err = sc.Publish("orders", testOrder)
+		if err != nil {
+			panic(fmt.Errorf("Error publishing message: %s", err))
+		}
+	}
+
 }
