@@ -1,0 +1,13 @@
+db:
+  host: localhost
+  port: 5432
+  database: test
+  user: user
+  password: pass
+  sslmode: disable
+nats:
+  url: nats://localhost:4222
+  stanClusterID: test-cluster
+  clientID: orders
+  subject: orders
+  durableName: wbl0
