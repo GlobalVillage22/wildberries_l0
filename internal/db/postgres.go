@@ -54,9 +54,23 @@ func (r *OrderRepo) CreateOrder(order model.Order) error {
 		return fmt.Errorf("Order with uid %s already exists", order.OrderUid)
 	}
 	tx := r.db.MustBegin()
-	tx.MustExec("INSERT INTO orders (order_uid, track_number, entry, delivery, payment,items, locale, internal_signature, customer_id, delivery_service, shardkey, sm_id, date_created, oof_shard)values ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14)",
-		order.OrderUid, order.TrackNumber, order.Entry, deliveryJSON, paymentJSON, itemsJSON, order.Locale,
-		order.InternalSignature, order.CustomerId, order.DeliveryService, order.Shardkey, order.SmId, order.DateCreated, order.OofShard)
+	tx.MustExec(
+		"INSERT INTO orders (order_uid, track_number, entry, delivery, payment,items, locale, internal_signature, customer_id, delivery_service, shardkey, sm_id, date_created, oof_shard) values ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14)",
+		order.OrderUid,
+		order.TrackNumber,
+		order.Entry,
+		deliveryJSON,
+		paymentJSON,
+		itemsJSON,
+		order.Locale,
+		order.InternalSignature,
+		order.CustomerId,
+		order.DeliveryService,
+		order.Shardkey,
+		order.SmId,
+		order.DateCreated,
+		order.OofShard,
+	)
 	err = tx.Commit()
 	if err != nil {
 		return err
@@ -73,8 +87,22 @@ func (r *OrderRepo) GetOrderByUid(uid string) (model.Order, error) {
 	}
 	defer rows.Close()
 	if rows.Next() {
-		err = rows.Scan(&order.OrderUid, &order.TrackNumber, &order.Entry, &order.Delivery, &order.Payment, &order.Items, &order.Locale,
-			&order.InternalSignature, &order.CustomerId, &order.DeliveryService, &order.Shardkey, &order.SmId, &order.DateCreated, &order.OofShard)
+		err = rows.Scan(
+			&order.OrderUid,
+			&order.TrackNumber,
+			&order.Entry,
+			&order.Delivery,
+			&order.Payment,
+			&order.Items,
+			&order.Locale,
+			&order.InternalSignature,
+			&order.CustomerId,
+			&order.DeliveryService,
+			&order.Shardkey,
+			&order.SmId,
+			&order.DateCreated,
+			&order.OofShard,
+		)
 		if err != nil {
 			return model.Order{}, err
 		}

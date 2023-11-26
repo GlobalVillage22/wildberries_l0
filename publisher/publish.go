@@ -7,7 +7,6 @@ import (
 	"github.com/nats-io/nats.go"
 	"github.com/nats-io/stan.go"
 	"math/rand"
-	"os"
 	"wbl0/internal"
 	"wbl0/internal/model"
 )
@@ -25,23 +24,7 @@ func main() {
 			err, cfg.NatsConfig.Url))
 	}
 	defer sc.Close()
-	var testItems []model.Item
-	for i := 0; i < rand.Intn(5); i++ {
-		testItems = append(testItems, model.Item{
-			ChrtID:      rand.Intn(1000),
-			TrackNumber: gofakeit.Word(),
-			Price:       rand.Intn(1000),
-			Rid:         gofakeit.Word(),
-			Name:        gofakeit.Word(),
-			Sale:        rand.Intn(1000),
-			Size:        gofakeit.Word(),
-			TotalPrice:  rand.Intn(1000),
-			NmID:        rand.Intn(1000),
-			Brand:       gofakeit.Word(),
-			Status:      rand.Intn(1000),
-		})
 
-	}
 	var data []model.Order
 	for i := 0; i < 1000; i++ {
 		data = append(data, model.Order{
@@ -69,7 +52,7 @@ func main() {
 				GoodsTotal:   rand.Intn(1000),
 				CustomFee:    rand.Intn(1000),
 			},
-			Items:             testItems,
+			Items:             testItems(),
 			Locale:            gofakeit.Word(),
 			InternalSignature: gofakeit.Word(),
 			CustomerId:        fmt.Sprintf("testCustomerID-%d", i),
@@ -90,10 +73,29 @@ func main() {
 			panic(fmt.Errorf("Error publishing message: %s", err))
 		}
 	}
-	newExampleOrder, err := os.ReadFile("model.json")
-	if err != nil {
-		fmt.Errorf("Error reading file: %s", err)
-	}
-	err = sc.Publish("orders", newExampleOrder)
+	//newExampleOrder, err := os.ReadFile("model.json")
+	//if err != nil {
+	//	fmt.Errorf("Error reading file: %s", err)
+	//}
+	//err = sc.Publish("orders", newExampleOrder)
 
+}
+func testItems() []model.Item {
+	var testItems []model.Item
+	for i := 0; i < rand.Intn(5); i++ {
+		testItems = append(testItems, model.Item{
+			ChrtID:      rand.Intn(1000),
+			TrackNumber: gofakeit.Word(),
+			Price:       rand.Intn(1000),
+			Rid:         gofakeit.Word(),
+			Name:        gofakeit.Word(),
+			Sale:        rand.Intn(1000),
+			Size:        gofakeit.Word(),
+			TotalPrice:  rand.Intn(1000),
+			NmID:        rand.Intn(1000),
+			Brand:       gofakeit.Word(),
+			Status:      rand.Intn(1000),
+		})
+	}
+	return testItems
 }
