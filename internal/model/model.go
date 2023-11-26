@@ -70,8 +70,6 @@ func (a Item) Value() (driver.Value, error) {
 	return json.Marshal(a)
 }
 
-// Make the Attrs struct implement the sql.Scanner interface. This method
-// simply decodes a JSON-encoded value into the struct fields.
 func (a *Delivery) Scan(value interface{}) error {
 	b, ok := value.([]byte)
 	if !ok {

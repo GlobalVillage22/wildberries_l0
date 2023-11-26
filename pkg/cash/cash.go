@@ -80,12 +80,10 @@ func (c *Cache) StartGC() {
 
 func (c *Cache) GC() {
 	for {
-		// ожидаем время установленное в cleanupInterval
 		<-time.After(c.cleanupInterval)
 		if c.elements == nil {
 			return
 		}
-		// Ищем элементы с истекшим временем жизни и удаляем из хранилища
 		if keys := c.expiredKeys(); len(keys) != 0 {
 			c.clearElements(keys)
 		}
@@ -93,7 +91,6 @@ func (c *Cache) GC() {
 
 }
 
-// expiredKeys возвращает список "просроченных" ключей
 func (c *Cache) expiredKeys() (keys []string) {
 	c.RLock()
 	defer c.RUnlock()
@@ -105,7 +102,6 @@ func (c *Cache) expiredKeys() (keys []string) {
 	return
 }
 
-// clearItems удаляет ключи из переданного списка, в нашем случае "просроченные"
 func (c *Cache) clearElements(keys []string) {
 	c.Lock()
 	defer c.Unlock()

@@ -7,6 +7,7 @@ import (
 	"github.com/nats-io/nats.go"
 	"github.com/nats-io/stan.go"
 	"math/rand"
+	"os"
 	"wbl0/internal"
 	"wbl0/internal/model"
 )
@@ -18,7 +19,7 @@ func main() {
 		panic(fmt.Errorf("Error connecting to nats in pub: %s", err))
 	}
 	defer nc.Close()
-	sc, err := stan.Connect(cfg.NatsConfig.StanClusterID, cfg.NatsConfig.ClientID, stan.NatsConn(nc))
+	sc, err := stan.Connect(cfg.NatsConfig.StanClusterID, "publisher", stan.NatsConn(nc))
 	if err != nil {
 		panic(fmt.Errorf("Can't connect: %v.\nMake sure a NATS Streaming Server is running at: %s",
 			err, cfg.NatsConfig.Url))
@@ -42,7 +43,7 @@ func main() {
 
 	}
 	var data []model.Order
-	for i := 0; i < 100; i++ {
+	for i := 0; i < 1000; i++ {
 		data = append(data, model.Order{
 			OrderUid:    fmt.Sprintf("testUid%d", i),
 			TrackNumber: fmt.Sprintf("testTrackNumber-%d", i),
@@ -89,5 +90,10 @@ func main() {
 			panic(fmt.Errorf("Error publishing message: %s", err))
 		}
 	}
+	newExampleOrder, err := os.ReadFile("model.json")
+	if err != nil {
+		fmt.Errorf("Error reading file: %s", err)
+	}
+	err = sc.Publish("orders", newExampleOrder)
 
 }

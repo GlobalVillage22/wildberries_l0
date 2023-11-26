@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Model Data</title>
+</head>
+<body>
+<h1>Model Data</h1>
+<div>
+    <form action="/" method="POST">
+    UID: <input type="text" name="uid">
+    <input type="submit" value="Get">
+    </form>
+</div>
+<div>
+    <h2>Order Information</h2>
+    <p>UID: {{.OrderUid}}</p>
+    <p>Track Number: {{.TrackNumber}}</p>
+    <p>Entry: {{.Entry}}</p>
+    <p>Locale: {{.Locale}}</p>
+    <p>Internal Signature: {{.InternalSignature}}</p>
+    <p>Customer ID: {{.CustomerId}}</p>
+    <p>Delivery Service: {{.DeliveryService}}</p>
+    <p>Shard Key: {{.Shardkey}}</p>
+    <p>SM ID: {{.SmId}}</p>
+    <p>Date Created: {{.DateCreated}}</p>
+    <p>Oof Shard: {{.OofShard}}</p>
+<div>
+    <h2>Delivery Information</h2>
+    <p>Zip: {{.Delivery.Zip}}</p>
+    <p>City: {{.Delivery.City}}</p>
+    <p>Address: {{.Delivery.Address}}</p>
+    <p>Region: {{.Delivery.Region}}</p>
+    <p>Email: {{.Delivery.Email}}</p>
+</div>
+<div>
+    <h2>Payment Information</h2>
+    <p>Transaction: {{.Payment.Transaction}}</p>
+    <p>Currency: {{.Payment.Currency}}</p>
+    <p>Provider: {{.Payment.Provider}}</p>
+    <p>Amount: {{.Payment.Amount}}</p>
+    <p>Payment Date: {{.Payment.PaymentDt}}</p>
+    <p>Bank: {{.Payment.Bank}}</p>
+    <p>Delivery Cost: {{.Payment.DeliveryCost}}</p>
+    <p>Goods Total: {{.Payment.GoodsTotal}}</p>
+    <p>Custom Fee: {{.Payment.CustomFee}}</p>
+</div>
+    <div>
+    <h2>Items</h2>
+    <ul>
+        {{range .Items}}
+        <li>
+            <p>Track Number: {{.TrackNumber}}</p>
+            <p>Price: {{.Price}}</p>
+            <p>RID: {{.Rid}}</p>
+            <p>Name: {{.Name}}</p>
+            <p>Sale: {{.Sale}}</p>
+            <p>Size: {{.Size}}</p>
+            <p>Total Price: {{.TotalPrice}}</p>
+            <p>NM ID: {{.NmID}}</p>
+            <p>Brand: {{.Brand}}</p>
+            <p>Status: {{.Status}}</p>
+        </li>
+        {{end}}
+    </ul>
+</div>
+</div>
+</body>
+</html>
